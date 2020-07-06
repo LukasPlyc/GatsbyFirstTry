@@ -1,22 +1,24 @@
 import React from "react"
 
+import Img from "gatsby-image"
 import { Link, graphql } from "gatsby"
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 
 export default function products({ data }) {
-  const products = data.allContentfulProduct.edges
+  const products = data.products.edges
   return (
     <Layout>
       <SEO title="Products" />
       <Link to="/">Home</Link> <br />
-      {products.map(({ node }) => {
+      {products.map(({ node: product }) => {
         return (
-          <div key={node.id}>
-            <h3>{node.title}</h3>
-            <p>{node.description.description}</p>
-            <img src={node.image.fixed.src} alt={node.title} />
+          <div key={product.id}>
+            <h3>{product.title}</h3>
+            <p>{product.description.description}</p>
+            <Img fixed={product.image.fixed} /> <br></br>
+            <Link to={`/products/${product.title}`}>Read More</Link>
           </div>
         )
       })}
@@ -26,7 +28,7 @@ export default function products({ data }) {
 // Test
 export const ProducsQuery = graphql`
   {
-    allContentfulProduct {
+    products: allContentfulProduct {
       edges {
         node {
           title
@@ -37,7 +39,7 @@ export const ProducsQuery = graphql`
           price
           image {
             fixed {
-              src
+              ...GatsbyContentfulFixed_tracedSVG
             }
           }
         }
